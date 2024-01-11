@@ -22,7 +22,8 @@ on:
         description: Select the version
         options:
           - ''
-          - skip_or_promote
+          - skip
+          - promote
           - new_release
           - breaking_change
 
@@ -72,7 +73,7 @@ jobs:
       - if: ${{ github.ref_name != 'main' }}
         run: echo "SEMVER=buildNumber" >> $GITHUB_ENV
 
-      - if: ${{ inputs.version == 'skip_or_promote' }}
+      - if: ${{ inputs.version == 'skip' ||  inputs.version == 'promote' }}
         run: echo "SEMVER=skip" >> $GITHUB_ENV
 
       - id: get_semver
@@ -93,7 +94,7 @@ jobs:
   release:
     name: Create a New Release
     runs-on: ubuntu-latest
-    needs: [ setup ]
+    needs: [setup]
     outputs:
       version: ${{ steps.release.outputs.version }}
     steps:
@@ -110,19 +111,38 @@ jobs:
     needs: [ setup, release ]
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
-    if: ${{ needs.setup.outputs.semver != 'skip' }}
+    if: ${{ inputs.semver != 'skip' }}
     steps:
       - name: Build and Push
         id: semver
         uses: pagopa/github-actions-template/ghcr-build-push@v1.5.4
         with:
+          branch: ${{ github.ref_name}}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ needs.release.outputs.version }}
 
-  deploy_aks:
-    name: Deploy on AKS
+
+  deploy_aks_dev:
+    name: Deploy on AKS DEV
     needs: [ setup, release, image ]
-    if: ${{ always() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') }}
+    uses: ./.github/workflows/deploy_with_github_runner.yml
+    with:
+      environment: ${{ needs.setup.outputs.environment }}
+    secrets: inherit
+
+  deploy_aks_uat:
+    name: Deploy on AKS UAT
+    needs: [ setup, release, image ]
+    if: ${{ needs.setup.outputs.environment != 'dev' }}
+    uses: ./.github/workflows/deploy_with_github_runner.yml
+    with:
+      environment: ${{ needs.setup.outputs.environment }}
+    secrets: inherit
+
+  deploy_aks_prod:
+    name: Deploy on AKS PROD
+    needs: [ setup, release, image ]
+    if: ${{ needs.setup.outputs.environment == 'prod' }}
     uses: ./.github/workflows/deploy_with_github_runner.yml
     with:
       environment: ${{ needs.setup.outputs.environment }}
@@ -130,7 +150,7 @@ jobs:
 
 
   notify:
-    needs: [ setup, release, deploy_aks ]
+    needs: [ deploy_aks_prod ]
     runs-on: ubuntu-latest
     name: Notify
     if: always()
@@ -139,7 +159,7 @@ jobs:
         if: ${{ needs.setup.outputs.environment == 'prod' }}
         uses: ravsamhq/notify-slack-action@v2
         with:
-          status: ${{ needs.deploy_aks.result }}
+          status: ${{ needs.deploy_aks_prod.result }}
           token: ${{ secrets.GITHUB_TOKEN }}
           notification_title: 'New Release on Production ${{ needs.release.outputs.version }} has {status_message}'
           message_format: '{emoji} <{run_url}|{workflow}> {status_message} in <{repo_url}|{repo}>'
