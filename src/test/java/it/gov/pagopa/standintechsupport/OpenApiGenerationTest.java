@@ -33,11 +33,6 @@ private static final CosmosDBEmulatorContainer cosmos = Initializer.getEmulator(
 
   @Test
   void swaggerSpringPlugin() throws Exception {
-
-      cosmos.start();
-      String emulatorEndpoint = cosmos.getEmulatorEndpoint();
-      cosmos.getEmulatorKey();
-
       mvc.perform(MockMvcRequestBuilders.get("/v3/api-docs").accept(MediaType.APPLICATION_JSON))
         .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
         .andDo(
