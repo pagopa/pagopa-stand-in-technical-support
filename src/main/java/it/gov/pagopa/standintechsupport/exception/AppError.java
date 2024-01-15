@@ -6,7 +6,8 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum AppError {
   BAD_REQUEST(HttpStatus.BAD_REQUEST, "Invalid Request", "%s"),
-  INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", "Something was wrong"),
+  INTERNAL_SERVER_ERROR(
+      HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", "Something was wrong"),
   INTERVAL_TOO_LARGE(HttpStatus.BAD_REQUEST, "Date interval too large", "%s");
 
   public final HttpStatus httpStatus;

@@ -1,8 +1,7 @@
 package it.gov.pagopa.standintechsupport.model;
 
-import lombok.*;
-
 import java.time.LocalDate;
+import lombok.*;
 
 @Getter
 @Setter

@@ -1,5 +1,7 @@
 microservice-chart:
   namespace: "nodo"
+  nameOverride: ""
+  fullnameOverride: ""
   image:
     repository: ghcr.io/pagopa/pagopa-stand-in-technical-support
     tag: "0.0.0"
@@ -26,31 +28,32 @@ microservice-chart:
     ports:
       - 8080
   ingress:
-    create: true
-    host: "your.host" # TODO: set the host
-    path: /your-path-here/(.*) # TODO: set your path
-    servicePort: 8080
+    create: false
   serviceAccount:
     create: false
-    annotations: { }
+    annotations: {}
     name: ""
-  podAnnotations: { }
+  podAnnotations: {}
   podSecurityContext:
     seccompProfile:
       type: RuntimeDefault
   securityContext:
     allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: false
+    capabilities:
+      drop:
+        - all
   resources:
     requests:
       memory: "512Mi"
       cpu: "0.25"
     limits:
-      memory: "512Mi"
-      cpu: "0.25"
+      memory: "768Mi"
+      cpu: "0.5"
   autoscaling:
     enable: true
     minReplica: 1
-    maxReplica: 10
+    maxReplica: 1
     pollingInterval: 10 # seconds
     cooldownPeriod: 50 # seconds
     triggers:
@@ -61,33 +64,32 @@ microservice-chart:
           value: "75"
   envConfig:
     WEBSITE_SITE_NAME: 'pagopa-stand-in-technical-support' # required to show cloud role name in application insights
-    ENV: 'prod'
+    ENV: 'azure-prod'
     APP_LOGGING_LEVEL: 'DEBUG'
     DEFAULT_LOGGING_LEVEL: 'INFO'
     CORS_CONFIGURATION: '{"origins": ["*"], "methods": ["*"]}'
-
-    SPRING_DATASOURCE_URL: "jdbc:postgresql://pagopa-p-weu-nodo-flexible-postgresql.postgres.database.azure.com:6432/nodo?prepareThreshold=0"
-    SPRING_DATASOURCE_USERNAME: "cfg"
-    COSMOS_ENDPOINT:
-
-    OTEL_SERVICE_NAME: "pagopa-stand-in-manager"
-    OTEL_RESOURCE_ATTRIBUTES: "deployment.environment=prod"
+    COSMOS_ENDPOINT: "https://pagopa-d-weu-nodo-standin-cosmos-account.documents.azure.com:443/"
+    OTEL_SERVICE_NAME: "pagopastandintechsupport"
+    OTEL_RESOURCE_ATTRIBUTES: "service.environment=prod"
     OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector.elastic-system.svc:4317"
     OTEL_TRACES_EXPORTER: otlp
     OTEL_METRICS_EXPORTER: otlp
     OTEL_LOGS_EXPORTER: none
     OTEL_TRACES_SAMPLER: "always_on"
-  envSecret:
-    # required
-    APPLICATIONINSIGHTS_CONNECTION_STRING: 'ai-p-connection-string'
-    OTEL_EXPORTER_OTLP_HEADERS: elastic-apm-secret-token
-    SPRING_DATASOURCE_PASSWORD: "db-cfg-password"
-    COSMOS_KEY: ""
+  secretProvider:
+    create: true
+    envSecrets:
+      # required
+      APPLICATIONINSIGHTS_CONNECTION_STRING: "ai-p-connection-string"
+      OTEL_EXPORTER_OTLP_HEADERS: "elastic-apm-secret-token"
+      COSMOS_KEY: "cosmos-standin-account-key"
   keyvault:
     name: "pagopa-p-name-kv"
     tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
-  nodeSelector: { }
-  tolerations: [ ]
+  tmpVolumeMount:
+    create: true
+  nodeSelector: {}
+  tolerations: []
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -97,3 +99,31 @@ microservice-chart:
                 operator: In
                 values:
                   - user
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/instance: "standintechsupport"
+            namespaces: ["nodo"]
+            topologyKey: topology.kubernetes.io/zone
+  canaryDelivery:
+    create: false
+    ingress:
+      create: true
+      canary:
+        type: header
+        headerName: X-Canary
+        headerValue: canary
+        weightPercent: 0
+    service:
+      create: true
+    deployment:
+      create: true
+      image:
+        repository: ghcr.io/pagopa/pagopa-stand-in-technical-support
+        tag: "0.0.0"
+        pullPolicy: Always
+      envConfig: {}
+      envSecrets: {}
