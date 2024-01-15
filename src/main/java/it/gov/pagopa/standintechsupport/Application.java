@@ -2,6 +2,7 @@ package it.gov.pagopa.standintechsupport; // TODO: refactor the package
 
 import com.azure.cosmos.CosmosClient;
 import com.azure.cosmos.CosmosClientBuilder;
+import com.azure.cosmos.DirectConnectionConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -23,6 +24,6 @@ public class Application {
 
   @Bean
   public CosmosClient getCosmosClient() {
-    return new CosmosClientBuilder().endpoint(cosmosEndpoint).key(cosmosKey).buildClient();
+    return new CosmosClientBuilder().endpoint(cosmosEndpoint).key(cosmosKey).directMode(new DirectConnectionConfig()).buildClient();
   }
 }
