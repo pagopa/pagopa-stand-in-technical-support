@@ -1,11 +1,11 @@
 locals {
   github = {
     org        = "pagopa"
-    repository = "TODO" #TODO
+    repository = "pagopa-stand-in-technical-support"
   }
 
   prefix         = "pagopa"
-  domain         = "TODO" #TODO
+  domain         = "nodo"
   location_short = "weu"
   product        = "${var.prefix}-${var.env_short}"
 
@@ -52,5 +52,16 @@ variable "github_repository_environment" {
     protected_branches     = false
     custom_branch_policies = true
     reviewers_teams        = ["pagopa-team-core"]
+  }
+}
+
+variable "tags" {
+  type = map(any)
+  default = {
+    CreatedBy   = "Terraform"
+    Environment = "PROD"
+    Owner       = "pagoPA"
+    Source      = "https://github.com/pagopa/pagopa-stand-in-technical-support"
+    CostCenter  = "TS310 - PAGAMENTI & SERVIZI"
   }
 }

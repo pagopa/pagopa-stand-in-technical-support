@@ -1,1 +1,179 @@
-{}
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "pagopa-stand-in-technical-support",
+    "description" : "Stand in Tech Support API",
+    "termsOfService" : "https://www.pagopa.gov.it/",
+    "version" : "0.0.0"
+  },
+  "servers" : [ {
+    "url" : "http://localhost",
+    "description" : "Generated server url"
+  } ],
+  "paths" : {
+    "/events" : {
+      "get" : {
+        "tags" : [ "support-controller" ],
+        "summary" : "Get the list of events",
+        "operationId" : "getEvents",
+        "parameters" : [ {
+          "name" : "station",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "from",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "name" : "to",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Get the list",
+            "headers" : {
+              "X-Request-Id" : {
+                "description" : "This header identifies the call",
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            },
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ResponseContainer"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid request",
+            "headers" : {
+              "X-Request-Id" : {
+                "description" : "This header identifies the call",
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters" : [ {
+        "name" : "X-Request-Id",
+        "in" : "header",
+        "description" : "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+        "schema" : {
+          "type" : "string"
+        }
+      } ]
+    },
+    "/stations" : {
+      "get" : {
+        "tags" : [ "support-controller" ],
+        "summary" : "Get the list of standin station",
+        "operationId" : "getStations",
+        "responses" : {
+          "200" : {
+            "description" : "Get the list",
+            "headers" : {
+              "X-Request-Id" : {
+                "description" : "This header identifies the call",
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            },
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters" : [ {
+        "name" : "X-Request-Id",
+        "in" : "header",
+        "description" : "This header identifies the call, if not passed it is self-generated. This ID is returned in the response.",
+        "schema" : {
+          "type" : "string"
+        }
+      } ]
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "CosmosEventModel" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "station" : {
+            "type" : "string"
+          },
+          "timestamp" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "type" : {
+            "type" : "string"
+          },
+          "info" : {
+            "type" : "string"
+          },
+          "date" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ResponseContainer" : {
+        "type" : "object",
+        "properties" : {
+          "dateFrom" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "dateTo" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "count" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/CosmosEventModel"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes" : {
+      "ApiKey" : {
+        "type" : "apiKey",
+        "description" : "The API key to access this function app.",
+        "name" : "Ocp-Apim-Subscription-Key",
+        "in" : "header"
+      }
+    }
+  }
+}
