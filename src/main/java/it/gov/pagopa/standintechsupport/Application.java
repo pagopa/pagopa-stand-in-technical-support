@@ -1,4 +1,4 @@
-package it.gov.pagopa.standintechsupport; // TODO: refactor the package
+package it.gov.pagopa.standintechsupport;
 
 import com.azure.cosmos.CosmosClient;
 import com.azure.cosmos.CosmosClientBuilder;

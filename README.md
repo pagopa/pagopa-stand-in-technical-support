@@ -1,7 +1,7 @@
 # StandIn Tech Support API
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=TODO-set-your-id&metric=alert_status)](https://sonarcloud.io/dashboard?id=TODO-set-your-id)
-[![Integration Tests](https://github.com/pagopa/<TODO-repo>/actions/workflows/integration_test.yml/badge.svg?branch=main)](https://github.com/pagopa/<TODO-repo>/actions/workflows/integration_test.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=pagopa-stand-in-technical-support&metric=alert_status)](https://sonarcloud.io/dashboard?id=pagopa-stand-in-technical-support)
+[![Integration Tests](https://github.com/pagopa/pagopa-stand-in-technical-support/actions/workflows/integration_test.yml/badge.svg?branch=main)](https://github.com/pagopa/pagopa-stand-in-technical-support/actions/workflows/integration_test.yml)
 
 Monitors the events of nodo-dei-pagamenti for station problems and activates/deactivates the standIn for that station.
 
