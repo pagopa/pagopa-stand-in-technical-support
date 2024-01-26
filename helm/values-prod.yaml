@@ -4,7 +4,7 @@ microservice-chart:
   fullnameOverride: ""
   image:
     repository: ghcr.io/pagopa/pagopa-stand-in-technical-support
-    tag: "0.0.2"
+    tag: "0.0.2-5-fix_action"
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -28,7 +28,9 @@ microservice-chart:
     ports:
       - 8080
   ingress:
-    create: false
+    create: true
+    host: "weudev.nodo.internal.platform.pagopa.it"
+    path: /pagopa-stand-in-technical-support(/|$)(.*)
   serviceAccount:
     create: false
     annotations: {}
