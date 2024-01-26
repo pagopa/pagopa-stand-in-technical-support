@@ -12,7 +12,7 @@
 
   <groupId>it.gov.pagopa</groupId>
   <artifactId>pagopa-stand-in-technical-support</artifactId>
-  <version>0.0.2-4-fix_action</version>
+  <version>0.0.2-5-fix_action</version>
   <description>Stand in Tech Support API</description>
 
   <properties>
