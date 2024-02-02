@@ -82,7 +82,7 @@ microservice-chart:
     create: true
     envSecrets:
       # required
-      APPLICATIONINSIGHTS_CONNECTION_STRING: "ai-p-connection-string"
+      APPLICATIONINSIGHTS_CONNECTION_STRING: "azure-insight-connection-string"
       OTEL_EXPORTER_OTLP_HEADERS: "elastic-apm-secret-token"
       COSMOS_KEY: "cosmos-standin-account-key"
   keyvault:
