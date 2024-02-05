@@ -70,7 +70,7 @@ microservice-chart:
     APP_LOGGING_LEVEL: 'DEBUG'
     DEFAULT_LOGGING_LEVEL: 'INFO'
     CORS_CONFIGURATION: '{"origins": ["*"], "methods": ["*"]}'
-    COSMOS_ENDPOINT: "https://pagopa-d-weu-nodo-standin-cosmos-account.documents.azure.com:443/"
+    COSMOS_ENDPOINT: "https://pagopa-p-weu-nodo-standin-cosmos-account.documents.azure.com:443/"
     OTEL_SERVICE_NAME: "pagopastandintechsupport"
     OTEL_RESOURCE_ATTRIBUTES: "service.environment=prod"
     OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector.elastic-system.svc:4317"
