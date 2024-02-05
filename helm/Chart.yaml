@@ -2,8 +2,8 @@ apiVersion: v2
 name: pagopa-stand-in-tech-support
 description: Microservice that handles Stand-In tech support api
 type: application
-version: 0.55.0
-appVersion: 0.0.2-7-develop
+version: 0.56.0
+appVersion: 0.0.2-8-develop
 dependencies:
   - name: microservice-chart
     version: 3.0.0

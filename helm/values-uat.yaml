@@ -4,7 +4,7 @@ microservice-chart:
   fullnameOverride: ""
   image:
     repository: ghcr.io/pagopa/pagopa-stand-in-technical-support
-    tag: "0.0.2-7-develop"
+    tag: "0.0.2-8-develop"
     pullPolicy: Always
   livenessProbe:
     httpGet:
