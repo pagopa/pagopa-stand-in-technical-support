@@ -4,7 +4,7 @@
     "title": "pagopa-stand-in-technical-support",
     "description": "Stand in Tech Support API",
     "termsOfService": "https://www.pagopa.gov.it/",
-    "version": "0.0.2-5-fix_action"
+    "version": "0.0.2-8-develop"
   },
   "servers": [
     {

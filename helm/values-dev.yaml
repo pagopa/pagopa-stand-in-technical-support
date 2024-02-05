@@ -4,7 +4,7 @@ microservice-chart:
   fullnameOverride: ""
   image:
     repository: ghcr.io/pagopa/pagopa-stand-in-technical-support
-    tag: "0.0.2-5-fix_action"
+    tag: "0.0.2-8-develop"
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -66,7 +66,7 @@ microservice-chart:
     APP_LOGGING_LEVEL: 'DEBUG'
     DEFAULT_LOGGING_LEVEL: 'INFO'
     CORS_CONFIGURATION: '{"origins": ["*"], "methods": ["*"]}'
-    COSMOS_ENDPOINT: "https://pagopa-d-weu-nodo-standin-cosmos-account.documents.azure.com:443/"
+    COSMOS_ENDPOINT: "https://pagopa-p-weu-nodo-standin-cosmos-account.documents.azure.com:443/"
     OTEL_SERVICE_NAME: "pagopastandintechsupport"
     OTEL_RESOURCE_ATTRIBUTES: "service.environment=dev"
     OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector.elastic-system.svc:4317"
@@ -78,7 +78,7 @@ microservice-chart:
     create: true
     envSecrets:
       # required
-      APPLICATIONINSIGHTS_CONNECTION_STRING: "ai-d-connection-string"
+      APPLICATIONINSIGHTS_CONNECTION_STRING: "azure-insight-connection-string"
       OTEL_EXPORTER_OTLP_HEADERS: "elastic-apm-secret-token"
       COSMOS_KEY: "cosmos-standin-account-key"
     keyvault:

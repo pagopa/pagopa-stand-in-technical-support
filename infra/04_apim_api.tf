@@ -10,14 +10,6 @@ locals {
   hostname     = var.hostname
 }
 
-resource "azurerm_api_management_group" "api_group_standin" {
-  name                = local.apim.product_id
-  resource_group_name = local.apim.rg
-  api_management_name = local.apim.name
-  display_name        = local.display_name
-  description         = local.description
-}
-
 resource "azurerm_api_management_api_version_set" "api_version_set_standin" {
   name                = "${var.prefix}-${var.env_short}-${var.location_short}-${local.project_name}"
   resource_group_name = local.apim.rg
@@ -47,7 +39,7 @@ module "standin_api_v1" {
 
   content_format = "openapi"
   content_value  = templatefile("../openapi/openapi.json", {
-    host = local.host
+    host    = local.host
   })
 
   xml_content = templatefile("./policy/_base_policy.xml", {
