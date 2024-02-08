@@ -23,7 +23,7 @@ public class Initializer implements ApplicationContextInitializer<ConfigurableAp
 
     private static final Integer[] exposedPorts = {8081, 10251, 10252, 10253, 10254};
     private static final List<TcpProxy> startedProxies = new ArrayList<>();
-    private static final String regex = "(?s).*Started\r\n$)";
+    private static final String regex = "(?s).*Started\r\n$";
     public static TemporaryFolder tempFolder = new TemporaryFolder();
     private static CosmosDBEmulatorContainer emulator = null;
 
