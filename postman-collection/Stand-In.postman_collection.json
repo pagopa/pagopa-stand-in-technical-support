@@ -1,0 +1,72 @@
+{
+	"info": {
+		"_postman_id": "10bb5884-2e2d-40c1-8165-b0fa384754c2",
+		"name": "Stand-In",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7859468"
+	},
+	"item": [
+		{
+			"name": "Get events",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Ocp-Apim-Subscription-Key",
+						"value": "{{ts-sub-key}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://api{{env}}.platform.pagopa.it/technical-support/stand-in/api/v1/events",
+					"protocol": "https",
+					"host": [
+						"api{{env}}",
+						"platform",
+						"pagopa",
+						"it"
+					],
+					"path": [
+						"technical-support",
+						"stand-in",
+						"api",
+						"v1",
+						"events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get stations",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Ocp-Apim-Subscription-Key",
+						"value": "{{ts-sub-key}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://api{{env}}.platform.pagopa.it/technical-support/stand-in/api/v1/stations",
+					"protocol": "https",
+					"host": [
+						"api{{env}}",
+						"platform",
+						"pagopa",
+						"it"
+					],
+					"path": [
+						"technical-support",
+						"stand-in",
+						"api",
+						"v1",
+						"stations"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
