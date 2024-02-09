@@ -1,7 +1,8 @@
 # StandIn Tech Support API
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=pagopa-stand-in-technical-support&metric=alert_status)](https://sonarcloud.io/dashboard?id=pagopa-stand-in-technical-support)
-[![Integration Tests](https://github.com/pagopa/pagopa-stand-in-technical-support/actions/workflows/integration_test.yml/badge.svg?branch=main)](https://github.com/pagopa/pagopa-stand-in-technical-support/actions/workflows/integration_test.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=pagopa_pagopa-stand-in-technical-support&metric=alert_status)](https://sonarcloud.io/dashboard?id=pagopa_pagopa-stand-in-technical-support)
+
+[//]: # ([![Integration Tests]&#40;https://github.com/pagopa/pagopa-stand-in-technical-support/actions/workflows/integration_test.yml/badge.svg?branch=main&#41;]&#40;https://github.com/pagopa/pagopa-stand-in-technical-support/actions/workflows/integration_test.yml&#41;)
 
 Monitors the events of nodo-dei-pagamenti for station problems and activates/deactivates the standIn for that station.
 
@@ -9,7 +10,7 @@ Monitors the events of nodo-dei-pagamenti for station problems and activates/dea
 
 ## Technology Stack
 
-- Java 11
+- Java 17
 - Spring Boot
 - Spring Web
 - Hibernate
