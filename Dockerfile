@@ -12,8 +12,7 @@ COPY --from=buildtime /build/target/*.jar application.jar
 RUN java -Djarmode=layertools -jar application.jar extract
 
 
-FROM ghcr.io/pagopa/docker-base-springboot-openjdk17:v1.1.2
-#@sha256:6fa320d452fa22066441f1ef292d15eb06f944bc8bca293e1a91ea460d30a613
+FROM ghcr.io/pagopa/docker-base-springboot-openjdk17:v1.1.2@sha256:de4e831fce6db6676c06ed16565ff19d4c86c929218eec228fae758bbb129f78
 ADD --chown=spring:spring https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v1.32.1/opentelemetry-javaagent.jar .
 
 COPY --chown=spring:spring  --from=builder dependencies/ ./
