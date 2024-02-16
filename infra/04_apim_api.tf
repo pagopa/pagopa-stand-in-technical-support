@@ -2,7 +2,7 @@ locals {
   project_name = "stand-in-technical-support"
   repo_name = "pagopa-stand-in-technical-support"
 
-  display_name = "Stand-in Technical Support"
+  display_name = "pagoPA Stand-in Technical Support"
   description  = "API Assistenza Stand-in"
   path  = "technical-support/stand-in/api"
 
