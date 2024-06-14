@@ -5,6 +5,8 @@ locals {
   apim = {
     name       = "${local.product}-apim"
     rg         = "${local.product}-api-rg"
+    mg         = "${local.product}-api-mg"
+    sg         = "${local.product}-api-sg"
     product_id = "technical_support_api"
   }
 }
