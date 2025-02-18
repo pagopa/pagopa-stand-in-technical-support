@@ -72,7 +72,7 @@ microservice-chart:
     CORS_CONFIGURATION: '{"origins": ["*"], "methods": ["*"]}'
     COSMOS_ENDPOINT: "https://pagopa-u-weu-nodo-standin-cosmos-account.documents.azure.com:443/"
     OTEL_SERVICE_NAME: "pagopastandintechsupport"
-    OTEL_RESOURCE_ATTRIBUTES: "service.environment=uat"
+    OTEL_RESOURCE_ATTRIBUTES: "deployment.environment=uat"
     OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector.elastic-system.svc:4317"
     OTEL_TRACES_EXPORTER: otlp
     OTEL_METRICS_EXPORTER: otlp
