@@ -49,7 +49,7 @@ def get_cosmos_client(args):
     """Create and return a Cosmos DB client using connection string"""
     try:
         connection_string = args.cosmos_connection_string
-        client = CosmosClient.from_connection_string(connection_string)
+        client = CosmosClient.from_connection_string(connection_string, preferred_locations=['North Europe'])
         return client
     except Exception as e:
         logger.error(f"Failed to create Cosmos DB client: {str(e)}")
