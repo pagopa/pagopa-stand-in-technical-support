@@ -32,9 +32,9 @@ microservice-chart:
     host: "weuprod.nodo.internal.platform.pagopa.it"
     path: /pagopa-stand-in-technical-support(/|$)(.*)
   serviceAccount:
-    create: false
-    annotations: {}
-    name: ""
+    name: "nodo-workload-identity"
+  azure:
+    workloadIdentityClientId: <workload-identity-client-id-set-automatically-by-gha>
   podAnnotations: {}
   podSecurityContext:
     seccompProfile:
