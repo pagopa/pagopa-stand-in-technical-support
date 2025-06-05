@@ -12,7 +12,7 @@
 
     <groupId>it.gov.pagopa</groupId>
     <artifactId>pagopa-stand-in-technical-support</artifactId>
-    <version>0.0.6-5-PIDM-492-workload-identity-helm-7</version>
+    <version>0.0.7</version>
     <description>Stand in Tech Support API</description>
 
     <properties>
