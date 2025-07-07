@@ -2,7 +2,7 @@ name: Generate and send report
 
 on:
   schedule:
-    - cron: '00 08 * * *' # (08:00AM GTM) send last day report
+    - cron: '22 11 * * *' # (08:00AM GTM) send last day report
   workflow_dispatch:
     inputs:
       start_date:
