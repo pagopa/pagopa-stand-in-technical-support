@@ -50,20 +50,7 @@ jobs:
     #  name: dev #${{ github.event.inputs.environment || 'prod' }}
     steps:
       - name: Auto approve
-        uses: andrea-deri/auto-approve@759a08b7049f3a960f42607f691a872d584bd65e
-        with:
-          pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
-          environment: ${{ github.event.inputs.environment || 'prod' }}
-
-  approve_report_script:
-    needs: [ create_runner ]
-    name: Execute auto-approve for 'Generate and send report'
-    runs-on: ubuntu-latest
-    #environment: 
-    #  name: dev #${{ github.event.inputs.environment || 'prod' }}
-    steps:
-      - name: Auto approve
-        uses: andrea-deri/auto-approve@bb4f5fb312f0b7f32ab87716a1c2af98c57142df
+        uses: andrea-deri/auto-approve@d2578d757630bef5922cf76899ca3bebcd095b8f
         with:
           pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
           environment: ${{ github.event.inputs.environment || 'prod' }}
@@ -114,6 +101,19 @@ jobs:
             --start-date "${{ env.report_start_date }}" \
             --end-date "${{ env.report_end_date }}"
 
+  approve_report_script:
+    needs: [ create_runner ]
+    name: Execute auto-approve for 'Generate and send report'
+    runs-on: ubuntu-latest
+    #environment: 
+    #  name: dev #${{ github.event.inputs.environment || 'prod' }}
+    steps:
+      - name: Auto approve
+        uses: andrea-deri/auto-approve@d2578d757630bef5922cf76899ca3bebcd095b8f
+        with:
+          pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
+          environment: ${{ github.event.inputs.environment || 'prod' }}
+          
   approve_cleanup_runner:
     needs: [ report_generation ]
     name: Execute auto-approve for 'Cleanup Runner'
