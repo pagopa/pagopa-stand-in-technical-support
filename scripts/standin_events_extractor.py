@@ -36,7 +36,7 @@ def parse_arguments():
     # Parametri per date e output
     parser.add_argument('--start-date', default='', help='Start date in YYYY-MM-DD format')
     parser.add_argument('--end-date', default='', help='End date in YYYY-MM-DD format')
-    parser.add_argument('--output', default='standin_events.csv', help='Output CSV file name')
+    parser.add_argument('--output', default='standin_events', help='Output CSV file name')
 
     # Parametri per connessione a Cosmos DB
     parser.add_argument('--cosmos-connection-string', required=True,
@@ -221,7 +221,7 @@ def main():
     args = parse_arguments()
 
     today_date = get_today_date()
-    
+
     start_date = args.start_date
     if start_date == '':
         start_date = "2025-04-30"
@@ -232,7 +232,7 @@ def main():
     
 
     header = f"Report extracted from events in date range: [{start_date} - {end_date}]"
-    output_file = args.output + "_" + today_date
+    output_file = args.output + "_" + today_date + ".csv"
 
     logger.info(f"Extracting stand-in events from {start_date} to {end_date}")
 
