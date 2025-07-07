@@ -2,13 +2,17 @@ name: Generate and send report
 
 on:
   schedule:
-    - cron: '00 08 * * *' # (08:00AM GTM) send last day report
+    - cron: '00 07 * * *' # (07:00AM GTM) send last day report
   workflow_dispatch:
     inputs:
-      report_date:
+      start_date:
         required: false
         type: string
-        description: Define a specific date in yyyy-MM-dd
+        description: Define a specific start date in yyyy-MM-dd
+      end_date:
+        required: false
+        type: string
+        description: Define a specific end date in yyyy-MM-dd
 
 
 permissions:
@@ -23,14 +27,12 @@ jobs:
     name: Create Runner
     runs-on: ubuntu-22.04
     environment:
-      name: uat
+      name: ${{ github.event.inputs.environment || 'prod' }}
     outputs:
       runner_name: ${{ steps.create_github_runner.outputs.runner_name }}
     steps:
-
       - name: Create GitHub Runner
         id: create_github_runner
-        # from https://github.com/pagopa/eng-github-actions-iac-template/tree/main/azure/github-self-hosted-runner-azure-create-action
         uses: pagopa/eng-github-actions-iac-template/azure/github-self-hosted-runner-azure-create-action@main
         with:
           client_id: ${{ secrets.CD_CLIENT_ID }}
@@ -41,24 +43,26 @@ jobs:
           pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
           self_hosted_runner_image_tag: "latest"
 
+  approve_create_runner:
+    name: Execute auto-approve for 'Create Runner'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto approve
+        uses: andrea-deri/auto-approve@551716896faf1171d10795d5e345f999200fdc32
+        with:
+          pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
+          environment: ${{ github.event.inputs.environment || 'prod' }}
 
   report_generation:
     name: Generate and send report
+    needs: [ create_runner ]
     runs-on: [ self-hosted, "${{ needs.create_runner.outputs.runner_name }}" ]
+    environment: 
+      name: ${{ github.event.inputs.environment || 'prod' }}
     steps:
-
       - name: Checkout
         id: checkout
         uses: actions/checkout@1f9a0c22da41e6ebfa534300ef656657ea2c6707
-
-      - name: Login
-        id: login
-        # from https://github.com/Azure/login/commits/master
-        uses: azure/login@92a5484dfaf04ca78a94597f4f19fea633851fa2
-        with:
-          client-id: ${{ secrets.CD_CLIENT_ID }}
-          tenant-id: ${{ secrets.TENANT_ID }}
-          subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
 
       - name: Generate variables
         id: generate_vars
@@ -73,12 +77,21 @@ jobs:
 
       - name: Install dependencies on Python environment
         run: |
-          cd ./scripts/
+          cd ./scripts
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Login
+        id: login
+        # from https://github.com/Azure/login/commits/master
+        uses: azure/login@92a5484dfaf04ca78a94597f4f19fea633851fa2
+        with:
+          client-id: ${{ secrets.CD_CLIENT_ID }}
+          tenant-id: ${{ secrets.TENANT_ID }}
+          subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
 
       - name: Generate report
         run: |
-          cd ./scripts/
+          cd ./scripts
           python standin_events_extractor.py \
             --cosmos-connection-string "${{ secrets.REPORT_GENERATION_CONNECTION_STRING }}" \
             --slack-webapi-token "${{ secrets.SLACK_WEBAPI_BOT_TOKEN }}" \
@@ -86,13 +99,24 @@ jobs:
             --start-date "${{ env.report_start_date }}" \
             --end-date "${{ env.report_end_date }}"
 
+  approve_report_script:
+    needs: [ create_runner ]
+    name: Execute auto-approve for 'Generate and send report'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto approve
+        uses: andrea-deri/auto-approve@551716896faf1171d10795d5e345f999200fdc32
+        with:
+          pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
+          environment: ${{ github.event.inputs.environment || 'prod' }}
+
   cleanup_runner:
     name: Cleanup Runner
     needs: [ create_runner, report_generation ]
-    if: ${{ success() }}
+    if: always()
     runs-on: ubuntu-22.04
     environment:
-      name: uat
+      name: ${{ github.event.inputs.environment || 'prod' }}
     steps:
 
       - name: Cleanup GitHub Runner
@@ -106,3 +130,14 @@ jobs:
           resource_group_name: ${{ vars.CONTAINER_APP_ENVIRONMENT_RESOURCE_GROUP_NAME }}
           runner_name: ${{ needs.create_runner.outputs.runner_name }}
           pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
+
+  approve_cleanup_runner:
+    needs: [ report_generation ]
+    name: Execute auto-approve for 'Cleanup Runner'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto approve
+        uses: andrea-deri/auto-approve@551716896faf1171d10795d5e345f999200fdc32
+        with:
+          pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
+          environment: ${{ github.event.inputs.environment || 'prod' }}
