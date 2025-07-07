@@ -32,7 +32,7 @@ jobs:
         uses: andrea-deri/auto-approve@042a1e58fa51acef74997dc9cebb1c665677d2ac
         with:
           pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
-          environment: ${{ inputs.environment }}
+          environment: ${{ inputs.environment || 'prod' }}
 
   create_runner:
     name: Create Runner
