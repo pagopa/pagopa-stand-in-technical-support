@@ -2,7 +2,7 @@ name: Generate and send report
 
 on:
   schedule:
-    - cron: '00 08 * * *' # (08:00AM GTM) send last day report
+    - cron: '00 07 * * *' # (07:00AM GTM) send last day report
   workflow_dispatch:
     inputs:
       start_date:
@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Auto approve
-        uses: andrea-deri/auto-approve@d95e62e2c7da15f6ee1274038f6f984f285dd5a0
+        uses: andrea-deri/auto-approve@551716896faf1171d10795d5e345f999200fdc32
         with:
           pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
           environment: ${{ github.event.inputs.environment || 'prod' }}
@@ -105,7 +105,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Auto approve
-        uses: andrea-deri/auto-approve@d95e62e2c7da15f6ee1274038f6f984f285dd5a0
+        uses: andrea-deri/auto-approve@551716896faf1171d10795d5e345f999200fdc32
         with:
           pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
           environment: ${{ github.event.inputs.environment || 'prod' }}
@@ -137,7 +137,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Auto approve
-        uses: andrea-deri/auto-approve@d95e62e2c7da15f6ee1274038f6f984f285dd5a0
+        uses: andrea-deri/auto-approve@551716896faf1171d10795d5e345f999200fdc32
         with:
           pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
           environment: ${{ github.event.inputs.environment || 'prod' }}
