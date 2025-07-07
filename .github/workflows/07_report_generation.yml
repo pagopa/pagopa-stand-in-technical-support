@@ -38,7 +38,7 @@ jobs:
     name: Create Runner
     runs-on: ubuntu-22.04
     environment:
-      name: ${{(github.event.inputs == null && 'prod') || inputs.environment }}
+      name: prod
     outputs:
       runner_name: ${{ steps.create_github_runner.outputs.runner_name }}
     steps:
