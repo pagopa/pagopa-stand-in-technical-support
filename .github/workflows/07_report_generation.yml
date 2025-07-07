@@ -94,7 +94,7 @@ jobs:
   cleanup_runner:
     name: Cleanup Runner
     needs: [ create_runner, report_generation ]
-    if: ${{ success() }}
+    if: ${{ true }}
     runs-on: ubuntu-22.04
     environment:
       name: uat
