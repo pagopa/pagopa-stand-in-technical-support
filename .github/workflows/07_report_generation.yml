@@ -5,10 +5,14 @@ on:
     - cron: '00 08 * * *' # (08:00AM GTM) send last day report
   workflow_dispatch:
     inputs:
-      report_date:
+      start_date:
         required: false
         type: string
-        description: Define a specific date in yyyy-MM-dd
+        description: Define a specific start date in yyyy-MM-dd
+      end_date:
+        required: false
+        type: string
+        description: Define a specific end date in yyyy-MM-dd
 
 
 permissions:
