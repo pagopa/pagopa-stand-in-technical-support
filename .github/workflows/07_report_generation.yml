@@ -22,12 +22,23 @@ permissions:
 
 
 jobs:
+  approve_create_runner:
+    name: Execute auto-approve for 'Create Runner'
+    runs-on: ubuntu-latest
+    environment: 
+      name: ${{ github.event.inputs == null || github.event.inputs == 'prod' }}
+    steps:
+      - name: Auto approve
+        uses: andrea-deri/auto-approve@042a1e58fa51acef74997dc9cebb1c665677d2ac
+        with:
+          pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
+          environment: ${{ inputs.environment || 'prod' }}
 
   create_runner:
     name: Create Runner
     runs-on: ubuntu-22.04
     environment:
-      name: prod
+      name: ${{(github.event.inputs == null && 'prod') || inputs.environment }}
     outputs:
       runner_name: ${{ steps.create_github_runner.outputs.runner_name }}
     steps:
@@ -43,13 +54,26 @@ jobs:
           pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
           self_hosted_runner_image_tag: "latest"
 
+  approve_report_script:
+    needs: [ create_runner ]
+    name: Execute auto-approve for 'Generate and send report'
+    runs-on: ubuntu-latest
+    environment: 
+      name: ${{ github.event.inputs == null || github.event.inputs == 'prod' }}
+    steps:
+      - name: Auto approve
+        uses: andrea-deri/auto-approve@042a1e58fa51acef74997dc9cebb1c665677d2ac
+        with:
+          pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
+          environment: ${{ inputs.environment || 'prod' }} 
+
   report_generation:
     name: Generate and send report
     needs: [ create_runner ]
     runs-on: [ self-hosted, "${{ needs.create_runner.outputs.runner_name }}" ]
-    environment: prod
+    environment: 
+      name: ${{ github.event.inputs == null || github.event.inputs == 'prod' }}
     steps:
-
       - name: Checkout
         id: checkout
         uses: actions/checkout@1f9a0c22da41e6ebfa534300ef656657ea2c6707
@@ -88,6 +112,19 @@ jobs:
             --slack-channel-id "${{ secrets.REPORT_CHANNEL_ID }}" \
             --start-date "${{ env.report_start_date }}" \
             --end-date "${{ env.report_end_date }}"
+
+  approve_cleanup_runner:
+    needs: [ report_generation ]
+    name: Execute auto-approve for 'Cleanup Runner'
+    runs-on: ubuntu-latest
+    environment: 
+      name: ${{ github.event.inputs == null || github.event.inputs == 'prod' }}
+    steps:
+      - name: Auto approve
+        uses: andrea-deri/auto-approve@042a1e58fa51acef74997dc9cebb1c665677d2ac
+        with:
+          pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
+          environment: ${{ inputs.environment || 'prod' }}
 
   cleanup_runner:
     name: Cleanup Runner
