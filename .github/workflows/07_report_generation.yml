@@ -29,7 +29,7 @@ jobs:
     #  name: dev #${{ github.event.inputs.environment || 'prod' }}
     steps:
       - name: Auto approve
-        uses: andrea-deri/auto-approve@a438e8d2562a425f00068b9d174418967caf99fc
+        uses: andrea-deri/auto-approve@bb4f5fb312f0b7f32ab87716a1c2af98c57142df
         with:
           pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
           environment: ${{ github.event.inputs.environment || 'prod' }}
