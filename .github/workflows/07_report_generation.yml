@@ -25,8 +25,8 @@ jobs:
   approve_create_runner:
     name: Execute auto-approve for 'Create Runner'
     runs-on: ubuntu-latest
-    environment: 
-      name: ${{ github.event.inputs.environment || 'prod' }}
+    #environment: 
+    #  name: dev #${{ github.event.inputs.environment || 'prod' }}
     steps:
       - name: Auto approve
         uses: andrea-deri/auto-approve@042a1e58fa51acef74997dc9cebb1c665677d2ac
