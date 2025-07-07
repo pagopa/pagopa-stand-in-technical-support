@@ -5,14 +5,6 @@ on:
     - cron: '00 08 * * *' # (08:00AM GTM) send last day report
   workflow_dispatch:
     inputs:
-      environment:
-        required: true
-        type: choice
-        description: Select the Environment
-        options:
-          - uat
-          - prod
-        default: prod
       start_date:
         required: false
         type: string
@@ -34,7 +26,7 @@ jobs:
     name: Execute auto-approve for 'Create Runner'
     runs-on: ubuntu-latest
     environment: 
-      name: ${{ inputs.environment }}
+      name: ${{ inputs.environment || 'prod' }}
     steps:
       - name: Auto approve
         uses: andrea-deri/auto-approve@042a1e58fa51acef74997dc9cebb1c665677d2ac
@@ -46,7 +38,7 @@ jobs:
     name: Create Runner
     runs-on: ubuntu-22.04
     environment:
-      name: ${{ inputs.environment }}
+      name: ${{ inputs.environment || 'prod' }}
     outputs:
       runner_name: ${{ steps.create_github_runner.outputs.runner_name }}
     steps:
