@@ -10,6 +10,7 @@ on:
         type: choice
         description: Select the Environment
         options:
+          - uat
           - prod
         default: prod
       start_date:
