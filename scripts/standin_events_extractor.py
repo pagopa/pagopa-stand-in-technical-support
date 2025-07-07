@@ -11,10 +11,13 @@ import argparse
 import csv
 import datetime
 import logging
+import os
 import sys
 from datetime import timezone
 
 from azure.cosmos import CosmosClient
+from slack_sdk import WebClient
+from slack_sdk.errors import SlackApiError
 
 # Configurazione del logging
 logging.basicConfig(
@@ -30,8 +33,8 @@ def parse_arguments():
     parser = argparse.ArgumentParser(description='Extract stand-in events from Cosmos DB')
 
     # Parametri per date e output
-    parser.add_argument('--start-date', required=True, help='Start date in YYYY-MM-DD format')
-    parser.add_argument('--end-date', required=True, help='End date in YYYY-MM-DD format')
+    parser.add_argument('--start-date', default='2025-04-30', help='Start date in YYYY-MM-DD format')
+    parser.add_argument('--end-date', default=get_yesterday_date(), help='End date in YYYY-MM-DD format')
     parser.add_argument('--output', default='standin_events.csv', help='Output CSV file name')
 
     # Parametri per connessione a Cosmos DB
@@ -41,6 +44,10 @@ def parse_arguments():
                         help='Cosmos DB database name')
     parser.add_argument('--cosmos-container', default='events',
                         help='Cosmos DB container name')
+    parser.add_argument('--slack-webapi-token', required=True,
+                        help='Token for Slack Web API bot')
+    parser.add_argument('--slack-channel-id', required=True,
+                        help='Token for Slack Web API bot')
 
     return parser.parse_args()
 
@@ -154,7 +161,14 @@ def process_events(events):
                     # Convert ISO strings to datetime objects
                     start_dt = datetime.datetime.fromisoformat(start_time)
                     end_dt = datetime.datetime.fromisoformat(end_time)
-                    duration = str(end_dt - start_dt)
+                    
+                    delta = end_dt - start_dt
+                    days = delta.days
+                    seconds = delta.seconds
+                    hours = seconds // 3600
+                    minutes = (seconds % 3600) // 60
+                    seconds = seconds % 60
+                    duration = f"{days}d {hours}h {minutes}m {seconds}s"
                 except ValueError:
                     logger.warning(f"Error calculating duration for session {start_time} - {end_time}")
                     duration = "Error"
@@ -169,12 +183,13 @@ def process_events(events):
     return result
 
 
-def write_to_csv(data, output_file):
+def write_to_csv(data, header, output_file):
     """Write processed data to CSV file"""
     try:
         with open(output_file, 'w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(["Stazione", "Data Inizio", "Data Fine", "Durata"])
+            writer.writerow([header])
+            writer.writerow(["Station", "Start date", "End date", "Duration"])
 
             for item in data:
                 writer.writerow([
@@ -190,21 +205,48 @@ def write_to_csv(data, output_file):
         sys.exit(1)
 
 
+def get_yesterday_date():
+    today = datetime.datetime.today()
+    yesterday = today - datetime.timedelta(days=1)
+    return yesterday.strftime('%Y-%m-%d')
+
+def get_today_date():
+    today = datetime.datetime.today()
+    return today.strftime('%Y-%m-%d')
+
+
 def main():
     """Main function"""
     args = parse_arguments()
 
+    today_date = get_today_date()
     start_date = args.start_date
     end_date = args.end_date
-    output_file = args.output
+    header = f"Report extracted from events in date range: [{start_date} - {end_date}]"
+    output_file = args.output + "_" + today_date
 
     logger.info(f"Extracting stand-in events from {start_date} to {end_date}")
 
     client = get_cosmos_client(args)
     events = query_standin_events(client, args, start_date, end_date)
     processed_data = process_events(events)
-    write_to_csv(processed_data, output_file)
+    write_to_csv(processed_data, header, output_file)
 
+    bot_token = args.slack_webapi_token
+    channel_id = args.slack_channel_id
+    
+    client = WebClient(token = bot_token)
+    try:
+        result = client.files_upload_v2(
+            channel = channel_id,
+            initial_comment = f"Generazione del report cumulativo per le stazioni in Stand-In [{today_date}]",
+            file = output_file,
+        )
+        logger.info(f"Response from Slack. Is OK? [{result['ok']}]")
+
+    except SlackApiError as e:
+        logger.error("Error uploading file: {}".format(e))
+  
     logger.info("Operation completed successfully")
 
 
