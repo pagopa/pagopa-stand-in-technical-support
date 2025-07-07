@@ -113,7 +113,7 @@ jobs:
   cleanup_runner:
     name: Cleanup Runner
     needs: [ create_runner, report_generation ]
-    if: ${{ true }}
+    if: always()
     runs-on: ubuntu-22.04
     environment:
       name: ${{ github.event.inputs.environment || 'prod' }}
