@@ -27,7 +27,7 @@ jobs:
     name: Create Runner
     runs-on: ubuntu-22.04
     environment:
-      name: uat
+      name: prod
     outputs:
       runner_name: ${{ steps.create_github_runner.outputs.runner_name }}
     steps:
@@ -47,7 +47,7 @@ jobs:
     name: Generate and send report
     needs: [ create_runner ]
     runs-on: [ self-hosted, "${{ needs.create_runner.outputs.runner_name }}" ]
-    environment: uat
+    environment: prod
     steps:
 
       - name: Checkout
@@ -95,7 +95,7 @@ jobs:
     if: ${{ true }}
     runs-on: ubuntu-22.04
     environment:
-      name: uat
+      name: prod
     steps:
 
       - name: Cleanup GitHub Runner
