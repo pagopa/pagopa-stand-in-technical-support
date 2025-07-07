@@ -2,7 +2,7 @@ name: Generate and send report
 
 on:
   schedule:
-    - cron: '22 11 * * *' # (08:00AM GTM) send last day report
+    - cron: '00 08 * * *' # (08:00AM GTM) send last day report
   workflow_dispatch:
     inputs:
       start_date:
@@ -22,17 +22,6 @@ permissions:
 
 
 jobs:
-  approve_create_runner:
-    name: Execute auto-approve for 'Create Runner'
-    runs-on: ubuntu-latest
-    #environment: 
-    #  name: dev #${{ github.event.inputs.environment || 'prod' }}
-    steps:
-      - name: Auto approve
-        uses: andrea-deri/auto-approve@be748e55a7fe02d19fbf4a75a7feab06f3f0adb0
-        with:
-          pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
-          environment: ${{ github.event.inputs.environment || 'prod' }}
 
   create_runner:
     name: Create Runner
@@ -53,6 +42,16 @@ jobs:
           resource_group_name: ${{ vars.CONTAINER_APP_ENVIRONMENT_RESOURCE_GROUP_NAME }} # RG of the runner
           pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
           self_hosted_runner_image_tag: "latest"
+
+  approve_create_runner:
+    name: Execute auto-approve for 'Create Runner'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto approve
+        uses: andrea-deri/auto-approve@be748e55a7fe02d19fbf4a75a7feab06f3f0adb0
+        with:
+          pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
+          environment: ${{ github.event.inputs.environment || 'prod' }}
 
   report_generation:
     name: Generate and send report
@@ -104,24 +103,9 @@ jobs:
     needs: [ create_runner ]
     name: Execute auto-approve for 'Generate and send report'
     runs-on: ubuntu-latest
-    #environment: 
-    #  name: dev #${{ github.event.inputs.environment || 'prod' }}
     steps:
       - name: Auto approve
-        uses: andrea-deri/auto-approve@d2578d757630bef5922cf76899ca3bebcd095b8f
-        with:
-          pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
-          environment: ${{ github.event.inputs.environment || 'prod' }}
-
-  approve_cleanup_runner:
-    needs: [ report_generation ]
-    name: Execute auto-approve for 'Cleanup Runner'
-    runs-on: ubuntu-latest
-    #environment: 
-    #  name: dev #${{ github.event.inputs.environment || 'prod' }}
-    steps:
-      - name: Auto approve
-        uses: andrea-deri/auto-approve@bb4f5fb312f0b7f32ab87716a1c2af98c57142df
+        uses: andrea-deri/auto-approve@be748e55a7fe02d19fbf4a75a7feab06f3f0adb0
         with:
           pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
           environment: ${{ github.event.inputs.environment || 'prod' }}
@@ -146,3 +130,14 @@ jobs:
           resource_group_name: ${{ vars.CONTAINER_APP_ENVIRONMENT_RESOURCE_GROUP_NAME }}
           runner_name: ${{ needs.create_runner.outputs.runner_name }}
           pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
+
+  approve_cleanup_runner:
+    needs: [ report_generation ]
+    name: Execute auto-approve for 'Cleanup Runner'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto approve
+        uses: andrea-deri/auto-approve@be748e55a7fe02d19fbf4a75a7feab06f3f0adb0
+        with:
+          pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
+          environment: ${{ github.event.inputs.environment || 'prod' }}
