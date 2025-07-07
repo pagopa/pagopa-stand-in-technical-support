@@ -22,6 +22,17 @@ permissions:
 
 
 jobs:
+  approve_create_runner:
+    name: Execute auto-approve for 'Create Runner'
+    runs-on: ubuntu-latest
+    #environment: 
+    #  name: dev #${{ github.event.inputs.environment || 'prod' }}
+    steps:
+      - name: Auto approve
+        uses: andrea-deri/auto-approve@d2578d757630bef5922cf76899ca3bebcd095b8f
+        with:
+          pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
+          environment: ${{ github.event.inputs.environment || 'prod' }}
 
   create_runner:
     name: Create Runner
@@ -42,19 +53,6 @@ jobs:
           resource_group_name: ${{ vars.CONTAINER_APP_ENVIRONMENT_RESOURCE_GROUP_NAME }} # RG of the runner
           pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
           self_hosted_runner_image_tag: "latest"
-
-  approve_create_runner:
-    name: Execute auto-approve for 'Create Runner'
-    runs-on: ubuntu-latest
-    needs: create_runner
-    #environment: 
-    #  name: dev #${{ github.event.inputs.environment || 'prod' }}
-    steps:
-      - name: Auto approve
-        uses: andrea-deri/auto-approve@d2578d757630bef5922cf76899ca3bebcd095b8f
-        with:
-          pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
-          environment: ${{ github.event.inputs.environment || 'prod' }}
 
   report_generation:
     name: Generate and send report
