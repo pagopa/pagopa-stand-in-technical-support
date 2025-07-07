@@ -48,6 +48,7 @@ jobs:
 
   report_generation:
     name: Generate and send report
+    needs: [ create_runner ]
     runs-on: [ self-hosted, "${{ needs.create_runner.outputs.runner_name }}" ]
     steps:
 
