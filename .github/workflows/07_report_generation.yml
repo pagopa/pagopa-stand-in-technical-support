@@ -34,19 +34,19 @@ jobs:
     name: Execute auto-approve for 'Create Runner'
     runs-on: ubuntu-latest
     environment: 
-      name: ${{ inputs.environment || 'prod' }}
+      name: ${{ inputs.environment }}
     steps:
       - name: Auto approve
         uses: andrea-deri/auto-approve@042a1e58fa51acef74997dc9cebb1c665677d2ac
         with:
           pat_token: ${{ secrets.BOT_TOKEN_GITHUB }}
-          environment: ${{ inputs.environment || 'prod' }}
+          environment: ${{ inputs.environment }}
 
   create_runner:
     name: Create Runner
     runs-on: ubuntu-22.04
     environment:
-      name: ${{ inputs.environment || 'prod' }}
+      name: ${{ inputs.environment }}
     outputs:
       runner_name: ${{ steps.create_github_runner.outputs.runner_name }}
     steps:
